@@ -1,0 +1,39 @@
+name: Alerte logements CROUS
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"   # toutes les 15 minutes
+  workflow_dispatch: {}       # permet de le lancer manuellement depuis GitHub
+
+permissions:
+  contents: write   # nécessaire pour que le workflow puisse sauvegarder l'état
+
+jobs:
+  verifier:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@v4
+
+      - name: Installer Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Installer les dépendances
+        run: pip install -r requirements.txt
+
+      - name: Lancer la vérification
+        env:
+          CROUS_EMAIL_FROM: ${{ secrets.CROUS_EMAIL_FROM }}
+          CROUS_EMAIL_PASSWORD: ${{ secrets.CROUS_EMAIL_PASSWORD }}
+          CROUS_EMAIL_TO: ${{ secrets.CROUS_EMAIL_TO }}
+        run: python crous_alerte.py
+
+      - name: Sauvegarder les logements déjà vus
+        run: |
+          git config user.name "crous-alerte-bot"
+          git config user.email "crous-alerte-bot@users.noreply.github.com"
+          git add logements_connus.json
+          git diff --quiet --cached || git commit -m "Mise a jour des logements connus"
+          git push
