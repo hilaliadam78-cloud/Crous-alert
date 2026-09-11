@@ -45,7 +45,7 @@ SEARCH_TOOL_ID = 47
 # Tu peux en obtenir un plus precis en faisant une recherche par ville sur
 # le site, puis en cliquant sur "Rechercher dans la zone" (carte) : l'URL
 # affichee dans le navigateur contient le bon parametre "bounds=...".
-BOUNDS = "9.10_42.35_9.20_42.25"
+BOUNDS = "1.4_49.3_3.6_48.0"
 
 # Filtre optionnel : prix maximum en euros (laisser None pour ignorer)
 PRIX_MAX = None  # ex: 500
